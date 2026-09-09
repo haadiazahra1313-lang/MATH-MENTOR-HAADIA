@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Mentor</title>
+    <title>Math Mentor - Chat</title>
+
     <style>
         * {
             margin: 0;
@@ -13,148 +14,421 @@
 
         body {
             font-family: Arial, sans-serif;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: #f4f6fb;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+
+        .chat-container {
+            width: 95%;
+            max-width: 1000px;
+            height: 92vh;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
+            padding: 18px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .container {
-            width: 90%;
-            max-width: 850px;
-            text-align: center;
-            padding: 50px 30px;
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 25px;
-            backdrop-filter: blur(15px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .logo {
-            width: 90px;
-            height: 90px;
-            margin: auto;
+        .header-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
             background: white;
             color: #667eea;
-            border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 42px;
             font-weight: bold;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            font-size: 24px;
         }
 
-        h1 {
-            margin-top: 25px;
-            font-size: 52px;
+        .header h2 {
+            font-size: 22px;
         }
 
-        .tagline {
-            margin-top: 12px;
-            font-size: 21px;
-            opacity: 0.92;
+        .header p {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 3px;
         }
 
-        .description {
-            margin: 25px auto;
-            max-width: 650px;
-            line-height: 1.7;
-            font-size: 16px;
-            opacity: 0.9;
-        }
-
-        .features {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin: 30px 0;
-        }
-
-        .feature {
-            background: rgba(255,255,255,0.14);
-            padding: 14px 20px;
-            border-radius: 14px;
-            font-size: 15px;
-        }
-
-        .start-btn {
-            display: inline-block;
+        .home-btn {
             text-decoration: none;
-            padding: 16px 40px;
-            background: white;
-            color: #5c67d8;
-            border-radius: 14px;
-            font-size: 18px;
-            font-weight: bold;
-            transition: 0.3s;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.18);
-        }
-
-        .start-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.25);
-        }
-
-        .footer {
-            margin-top: 35px;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.5);
+            padding: 9px 14px;
+            border-radius: 10px;
             font-size: 13px;
+        }
+
+        .chat-box {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            background: #f8f9fd;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 18px;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 75%;
+            padding: 14px 17px;
+            border-radius: 16px;
+            line-height: 1.6;
+            font-size: 15px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .bot .message-content {
+            background: white;
+            color: #222;
+            border: 1px solid #e6e8ef;
+            border-bottom-left-radius: 4px;
+        }
+
+        .user .message-content {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .sender {
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 5px;
             opacity: 0.7;
         }
 
+        .input-area {
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        #messageInput {
+            flex: 1;
+            border: 1px solid #d7dbe5;
+            border-radius: 14px;
+            outline: none;
+            padding: 15px;
+            font-size: 15px;
+            resize: none;
+            height: 54px;
+        }
+
+        #messageInput:focus {
+            border-color: #667eea;
+        }
+
+        #sendBtn {
+            width: 58px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        #sendBtn:hover {
+            opacity: 0.9;
+        }
+
+        #sendBtn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .clear-btn {
+            margin-top: 8px;
+            background: none;
+            border: none;
+            color: #777;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .typing {
+            display: inline-flex;
+            gap: 4px;
+            padding: 5px 0;
+        }
+
+        .typing span {
+            width: 7px;
+            height: 7px;
+            background: #888;
+            border-radius: 50%;
+            animation: blink 1.4s infinite;
+        }
+
+        .typing span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes blink {
+            0%, 80%, 100% {
+                opacity: 0.2;
+            }
+            40% {
+                opacity: 1;
+            }
+        }
+
         @media (max-width: 600px) {
-            h1 {
-                font-size: 38px;
+            .chat-container {
+                width: 100%;
+                height: 100vh;
+                border-radius: 0;
             }
 
-            .tagline {
-                font-size: 17px;
+            .message-content {
+                max-width: 88%;
             }
 
-            .container {
-                padding: 35px 20px;
+            .header {
+                padding: 15px;
+            }
+
+            .chat-box {
+                padding: 15px;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
 
-        <div class="logo">∑</div>
+<div class="chat-container">
 
-        <h1>Math Mentor</h1>
+    <div class="header">
+        <div class="header-left">
+            <div class="header-logo">∑</div>
 
-        <p class="tagline">
-            Your AI-Powered Mathematics Assistant
-        </p>
-
-        <p class="description">
-            Solve mathematical problems, understand difficult concepts,
-            and learn step-by-step with your personal AI math mentor.
-        </p>
-
-        <div class="features">
-            <div class="feature">📐 Algebra</div>
-            <div class="feature">📊 Statistics</div>
-            <div class="feature">📏 Geometry</div>
-            <div class="feature">∫ Calculus</div>
-            <div class="feature">🧮 Arithmetic</div>
-            <div class="feature">💡 Step-by-Step Solutions</div>
+            <div>
+                <h2>Math Mentor</h2>
+                <p>AI Mathematics Assistant</p>
+            </div>
         </div>
 
-        <a href="chat.html" class="start-btn">
-            Start Learning →
-        </a>
+        <a href="index.html" class="home-btn">Home</a>
+    </div>
 
-        <div class="footer">
-            Math Mentor • AI Mathematics Chatbot
+    <div class="chat-box" id="chatBox">
+
+        <div class="message bot">
+            <div class="message-content">
+                <div class="sender">Math Mentor</div>
+                Hello! 👋 I'm your Math Mentor.
+
+                Ask me any mathematics question and I'll help you understand it step by step.
+
+                Try:
+                • Solve 2x + 5 = 15
+                • Explain Pythagoras theorem
+                • Find the derivative of x²
+            </div>
         </div>
 
     </div>
+
+    <div class="input-area">
+
+        <div class="input-wrapper">
+
+            <textarea
+                id="messageInput"
+                placeholder="Type your mathematics question..."
+                autocomplete="off"
+            ></textarea>
+
+            <button id="sendBtn">➤</button>
+
+        </div>
+
+        <button class="clear-btn" onclick="clearChat()">
+            Clear Chat
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+    const messageInput = document.getElementById("messageInput");
+    const sendBtn = document.getElementById("sendBtn");
+    const chatBox = document.getElementById("chatBox");
+
+    function addMessage(text, sender) {
+        const message = document.createElement("div");
+        message.className = `message ${sender}`;
+
+        const content = document.createElement("div");
+        content.className = "message-content";
+
+        const senderName = document.createElement("div");
+        senderName.className = "sender";
+        senderName.textContent =
+            sender === "user" ? "You" : "Math Mentor";
+
+        const textElement = document.createElement("div");
+        textElement.textContent = text;
+
+        content.appendChild(senderName);
+        content.appendChild(textElement);
+        message.appendChild(content);
+
+        chatBox.appendChild(message);
+
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function addTyping() {
+        const message = document.createElement("div");
+        message.className = "message bot";
+        message.id = "typingMessage";
+
+        message.innerHTML = `
+            <div class="message-content">
+                <div class="sender">Math Mentor</div>
+                <div class="typing">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        `;
+
+        chatBox.appendChild(message);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function removeTyping() {
+        const typing = document.getElementById("typingMessage");
+
+        if (typing) {
+            typing.remove();
+        }
+    }
+
+    async function sendMessage() {
+
+        const message = messageInput.value.trim();
+
+        if (!message) {
+            return;
+        }
+
+        addMessage(message, "user");
+
+        messageInput.value = "";
+        sendBtn.disabled = true;
+
+        addTyping();
+
+        try {
+
+            const response = await fetch("/chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: message
+                })
+            });
+
+            removeTyping();
+
+            if (!response.ok) {
+                throw new Error("Server error");
+            }
+
+            const data = await response.json();
+
+            addMessage(
+                data.response || data.message || "I couldn't generate a response.",
+                "bot"
+            );
+
+        } catch (error) {
+
+            removeTyping();
+
+            addMessage(
+                "Sorry, I couldn't connect to the Math Mentor server. Please make sure the Python backend is running.",
+                "bot"
+            );
+
+            console.error(error);
+
+        } finally {
+            sendBtn.disabled = false;
+            messageInput.focus();
+        }
+    }
+
+    sendBtn.addEventListener("click", sendMessage);
+
+    messageInput.addEventListener("keydown", function(event) {
+
+        if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            sendMessage();
+        }
+
+    });
+
+    function clearChat() {
+
+        chatBox.innerHTML = `
+            <div class="message bot">
+                <div class="message-content">
+                    <div class="sender">Math Mentor</div>
+                    Chat cleared. 😊
+
+                    Ask me a new mathematics question.
+                </div>
+            </div>
+        `;
+    }
+</script>
+
 </body>
 </html>
