@@ -19,6 +19,8 @@ if not api_key:
 # Create Groq client
 client = Groq(api_key=api_key)
 
+# Model to use
+MODEL_NAME = "openai/gpt-oss-20b"
 
 # Conversation memory
 messages = [
@@ -32,7 +34,7 @@ messages = [
 print("=" * 60)
 print("              MY AI CHATBOT")
 print("=" * 60)
-print("Powered by Groq + Llama 3.1 8B")
+print(f"Powered by Groq + {MODEL_NAME}")
 print("Type 'quit', 'exit', or 'bye' to stop.")
 print("=" * 60)
 
@@ -64,7 +66,7 @@ while True:
 
         # Send conversation to LLM
         stream = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model=MODEL_NAME,
             messages=messages,
             temperature=0.7,
             max_tokens=1024,
@@ -105,4 +107,3 @@ while True:
 
         # Remove the failed user message
         messages.pop()
-        
